@@ -1,3 +1,5 @@
+//William Murray
+//John Miner
 package main
 
 import (
@@ -11,10 +13,12 @@ import (
 	"time"
 )
 
+//Class definition
 type Controller struct {
 	ar []int
 }
 
+//Menu
 func (C Controller) Menu() {
 	fmt.Print("MENU \n\n")
 	fmt.Println("1) Create Empty heap")
@@ -27,6 +31,8 @@ func (C Controller) Menu() {
 	fmt.Print(": ")
 }
 
+/* Closure to handle which operation is chosen
+ */
 func (C *Controller) choiceTaker(x int) func() {
 	m := map[int]func(){
 		1: C.option1,
@@ -44,6 +50,7 @@ func randInt(min int, max int) int {
 	return min + rand.Intn(max-min)
 }
 
+//Creates a empty heap
 func (C *Controller) option1() {
 	fmt.Println("Creating a Empty Heap")
 	C.ar = make([]int, 0)
@@ -52,6 +59,7 @@ func (C *Controller) option1() {
 	// return C.ar
 }
 
+//Allows user to define their own Heap
 func (C *Controller) option2() {
 	fmt.Print("Enter the Integers to be in the Heap followed by ',' i.e. : 1,2,3,...\n: ")
 	input := bufio.NewReader(os.Stdin)
@@ -61,18 +69,20 @@ func (C *Controller) option2() {
 	}
 	reply = reply[:len(reply)-1]
 
+	//Parse the slice of strings to ints
 	strs := strings.Split(reply, ",")
 	C.ar = make([]int, len(strs))
 	for i := 0; i < len(strs); i++ {
 		num, _ := strconv.Atoi(strs[i])
 		C.ar[i] = num
 	}
+	//build the heap
 	buildHeap(C.ar)
 	fmt.Println(C.ar)
 }
 
+//Insert User given value into heap
 func (C *Controller) option3() {
-
 	fmt.Print("Enter a number to insert into the heap\n: ")
 	input := bufio.NewReader(os.Stdin)
 	reply, err := input.ReadString('\n')
@@ -91,19 +101,25 @@ func (C *Controller) option3() {
 	// return C.ar
 }
 
+//Pop element from heap
 func (C *Controller) option4() {
 	if len(C.ar) == 0 {
 		C.ar = make([]int, 0)
 	} else {
+		//set last element as first
 		C.ar[0] = C.ar[len(C.ar)-1]
+		//truncate last element
 		C.ar = C.ar[:len(C.ar)-1]
 	}
+	//rebuild heap
 	buildHeap(C.ar)
 	fmt.Println("Heap after pop")
 	fmt.Println(C.ar)
 }
 
+//Sort Heap
 func (C *Controller) option5() {
+	//dummy array to not modify original order
 	ar := make([]int, len(C.ar))
 	for i := 0; i < len(C.ar); i++ {
 		ar[i] = C.ar[i]
@@ -115,6 +131,7 @@ func (C *Controller) option5() {
 	fmt.Println(ar)
 }
 
+//User defines size of array to be generated, then tested with defined HeapSort and built in sort
 func (C *Controller) option6() {
 	fmt.Print("Enter a size for the random array\n:")
 	var size int
@@ -152,22 +169,23 @@ func (C *Controller) option6() {
 
 }
 
+//Heapify with items of smallest value pushed to top of heap
 func heapifyMin(ar []int, n int, i int) {
-	smallest := i // Initialize largest as root
-	l := 2*i + 1  // left = 2i + 1
-	r := 2*i + 2  // right = 2i + 2
+	smallest := i // Initialize smallest index with argument index
+	l := 2*i + 1  // left index = 2i + 1
+	r := 2*i + 2  // right index = 2i + 2
 
-	// If left child is larger than root
+	// If left child is smaller than argument index value
 	if l < n && ar[l] < ar[smallest] {
 		smallest = l
 	}
 
-	// If right child is larger than largest so far
+	// If right child is smaller than smallest so far
 	if r < n && ar[r] < ar[smallest] {
 		smallest = r
 	}
 
-	// If largest is not root
+	// If smaller is not root
 	if smallest != i {
 		swap := ar[i]
 		ar[i] = ar[smallest]
@@ -179,19 +197,25 @@ func heapifyMin(ar []int, n int, i int) {
 
 }
 
+//builds heap by running heapifyMin successively
 func buildHeap(ar []int) {
 	for index := len(ar) / 2; index >= 0; index-- {
 		heapifyMin(ar, len(ar), index)
 	}
 }
 
+//HeapSort algorithm
 func heapSort(ar []int) {
+	//BuildHeap to ensure ease of sort
 	buildHeap(ar)
 	for i := len(ar) - 1; i >= 1; i-- {
+		//swap last and first elements
 		swap := ar[0]
 		ar[0] = ar[i]
 		ar[i] = swap
+		//truncate last element
 		ar = ar[:len(ar)-1]
+		//run heapify to push lowest elements to top of list
 		heapifyMin(ar, len(ar), 0)
 	}
 }
