@@ -17,12 +17,6 @@ type Tree struct {
 	count int64
 }
 
-func (t *Tree) buildHeap(ar []int64) {
-	for index := 0; index < len(ar); index++ {
-		t.insert(ar[index])
-	}
-}
-
 func (T *Tree) insert(data int64) *Tree {
 	if T.root == nil {
 		T.root = &Node{data: data, left: nil, right: nil, parent: nil}
@@ -65,3 +59,8 @@ func (n *Node) createAr(ar []int64, place int) {
 	n.left.createAr(ar, (place*2)+1)
 	n.right.createAr(ar, (place*2)+2)
 }
+
+// func (n *Node) swap(other *Node) {
+// 	if
+
+// }
